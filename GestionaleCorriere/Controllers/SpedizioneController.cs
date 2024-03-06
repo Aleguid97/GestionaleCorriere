@@ -8,10 +8,11 @@ using System.Web;
 using System.Web.Mvc;
 
 namespace GestionaleCorriere.Controllers
-{
+{ 
+    [Authorize(Roles = "Admin")]
     public class SpedizioneController : Controller
     {
-        // GET: Spedizione
+       
         public ActionResult Index()
         {
             return View();

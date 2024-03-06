@@ -6,9 +6,10 @@ using System.Web.Mvc;
 
 namespace GestionaleCorriere.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class ClienteController : Controller
     {
-        // GET: Cliente
+        
         public ActionResult Index()
         {
             return View();

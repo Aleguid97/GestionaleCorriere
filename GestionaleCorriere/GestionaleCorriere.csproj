@@ -124,12 +124,14 @@
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SpedizioneController.cs" />
+    <Compile Include="Controllers\UserValid.cs" />
     <Compile Include="Controllers\UtenteController.cs" />
     <Compile Include="DataSpedizione.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Cliente.cs" />
+    <Compile Include="Models\SiteRoles.cs" />
     <Compile Include="Models\Spedizione.cs" />
     <Compile Include="Models\Utenti.cs" />
     <Compile Include="Nominativo.cs" />
