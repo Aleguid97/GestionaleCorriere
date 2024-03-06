@@ -22,8 +22,9 @@ namespace GestionaleCorriere.Models
         [Display(Name = "Codice Tracciamento")]
         public string codTracciamento { get; set; }
 
-        [Required(ErrorMessage = "Il campo Data Spedizione è obbligatorio")]
+       
         [Display(Name = "Data Spedizione")]
+        [DataSpedizione]
         public DateTime dataSpedizione { get; set; }
 
         [Required(ErrorMessage = "Il campo Città Destinazione è obbligatorio")]
@@ -31,7 +32,7 @@ namespace GestionaleCorriere.Models
         public string cittaDestinazione { get; set; }
 
         [Required(ErrorMessage = "Il campo Nominativo Destinatario è obbligatorio")]
-        [Display(Name = "Nominativo Destinatario")]
+        [Display(Name = "Destinatario")] 
         public string nominativoDestinatario { get; set; }
 
         [Required(ErrorMessage = "Il campo Costo Spedizione è obbligatorio")]
@@ -41,5 +42,10 @@ namespace GestionaleCorriere.Models
         [Required(ErrorMessage = "Il campo Data Consegna è obbligatorio")]
         [Display(Name = "Data Consegna")]
         public DateTime dataConsegna { get; set; }
+
+
+        [Required(ErrorMessage = "Il campo Peso Spedizione è obbligatorio")]
+        [Display(Name = "Peso")]
+        public decimal pesoSpedizione { get; set; }
     }
 }

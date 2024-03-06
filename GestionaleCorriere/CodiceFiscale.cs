@@ -1,46 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace GestionaleCorriere
 {
     public class CodiceFiscale : ValidationAttribute
-
-
-
-
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            string codiceFiscale = value.ToString();
-            if (codiceFiscale.Length != 16)
-            {
-                return new ValidationResult("Il codice fiscale deve essere lungo 16 caratteri");
-            }
+            string codiceFiscale = value?.ToString();
+            bool IsAzienda = (bool)validationContext.ObjectInstance.GetType().GetProperty("IsAzienda").GetValue(validationContext.ObjectInstance);
+
+            if (!IsAzienda && (codiceFiscale == null || codiceFiscale.Length != 16 || !Regex.IsMatch(codiceFiscale, @"^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$")))
+                return new ValidationResult("Il codice fiscale non è valido");
+
             return ValidationResult.Success;
         }
-
-
-        //public class CodiceFiscaleValidator
-        //{
-        //    public static bool IsValidCodiceFiscale(string codiceFiscale)
-        //    {
-        //        // Espressione regolare per il codice fiscale italiano
-        //        string pattern = @"^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$";
-
-        //        // Regex per la convalida
-        //        Regex regex = new Regex(pattern);
-
-        //        // Verifica se il codice fiscale corrisponde al pattern
-        //        return regex.IsMatch(codiceFiscale);
-        //    }
-        //}
     }
 }
-
 
 
 

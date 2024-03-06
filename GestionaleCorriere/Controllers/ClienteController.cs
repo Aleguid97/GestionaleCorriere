@@ -1,62 +1,70 @@
 ﻿using GestionaleCorriere.Models;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Reflection;
-using System.Web;
 using System.Web.Mvc;
 
 namespace GestionaleCorriere.Controllers
 {
     public class ClienteController : Controller
     {
-        public object Partita_Iva { get; private set; }
-
         // GET: Cliente
         public ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult InsertCliente()
+        public ActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public ActionResult InsertCliente(Cliente model)
+        public ActionResult Create(Cliente cliente)
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["Gestionale"].ConnectionString.ToString();
-            SqlConnection conn = new SqlConnection(connectionString);
-            conn.Open();
-            try
+            if (ModelState.IsValid)
             {
+                try
+                {
+                    string connectionString = ConfigurationManager.ConnectionStrings["Gestionale"].ConnectionString;
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        string query = "INSERT INTO Cliente (Nominativo, IsAzienda, Codice_Fiscale, Partita_Iva, Ragione_Sociale, Citta) VALUES (@Nominativo, @IsAzienda, @Codice_Fiscale, @Partita_Iva, @Ragione_Sociale, @Citta)";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            // Output di debug per verificare i dati inseriti
+                            System.Diagnostics.Debug.WriteLine($"Nominativo: {cliente.Nominativo}, IsAzienda: {cliente.IsAzienda}, ...");
 
-                string query = "INSERT INTO CLIENTE ( IDcliente, Nominativo , IsAzienda, Codice_Fiscale, Partita_Iva) VALUES ( @IDcliente, @Nominativo, @IsAzienda, @Codice_Fiscale, @Partita_Iva)";
+                            command.Parameters.AddWithValue("@Nominativo", cliente.Nominativo ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@IsAzienda", cliente.IsAzienda);
+                            command.Parameters.AddWithValue("@Codice_Fiscale", cliente.Codice_Fiscale ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@Partita_Iva", cliente.Partita_Iva ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@Ragione_Sociale", cliente.Ragione_Sociale ?? (object)DBNull.Value);
+                            command.Parameters.AddWithValue("@Citta", cliente.Citta);
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@idcliente", model.IDcliente);
-                cmd.Parameters.AddWithValue("@nominativo", model.Nominativo);
-                cmd.Parameters.AddWithValue("@IsAzienda", model.IsAzienda);
-                cmd.Parameters.AddWithValue("@codice_fiscale", model.Codice_Fiscale);
-                cmd.Parameters.AddWithValue("@partita_iva", Partita_Iva);
-                
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                    }
 
-                cmd.ExecuteNonQuery();
+                    return RedirectToAction("Create", "Cliente");
+                }
+                catch (SqlException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Errore SQL: {ex.Message}");
+                    return View(ex.Message); // Puoi creare una vista specifica per gli errori
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Errore generale: {ex.Message}");
+                    return View("Error");
+                }
             }
-            catch (SqlException ex)
+            else
             {
-                System.Diagnostics.Debug.WriteLine("Errore nella richiesta SQL");
-                return View(ex.Message);
+                return View("Create", cliente);
             }
-            finally
-            {
-                conn.Close();
-            }
-
-            return RedirectToAction("Create", "Cliente");
-
         }
     }
 }

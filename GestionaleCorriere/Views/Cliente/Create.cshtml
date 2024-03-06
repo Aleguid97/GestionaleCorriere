@@ -1,0 +1,105 @@
+﻿@model GestionaleCorriere.Models.Cliente
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Inserisci Cliente</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                <div class="col-md-4 mt-4">
+                    <label>
+                        @Html.EditorFor(model => model.IsAzienda, new { htmlAttributes = new { @id = "IsAzienda"} })
+                    </label>
+                    @Html.LabelFor(model => model.IsAzienda, htmlAttributes: new { @class = "control-label" })
+                </div>
+                <div class="col-md-8">
+                    <div class="checkbox">
+                        @Html.ValidationMessageFor(model => model.IsAzienda, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                @Html.LabelFor(model => model.Nominativo, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Nominativo, new { @class = "form-control", @id = "Nome" })
+                    @Html.ValidationMessageFor(model => model.Nominativo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                @Html.LabelFor(model => model.Codice_Fiscale, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Codice_Fiscale, new { @class = "form-control", @id = "Cod_Fi" })
+                    @Html.ValidationMessageFor(model => model.Codice_Fiscale, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group mt-1">
+                @Html.LabelFor(model => model.Ragione_Sociale, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Ragione_Sociale, new { @class = "form-control", @id = "RS", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.Ragione_Sociale, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                @Html.LabelFor(model => model.Partita_Iva, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Partita_Iva, new { @class = "form-control", @id = "PIVA", @disabled = "true" })
+                    @Html.ValidationMessageFor(model => model.Partita_Iva, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group mt-3">
+                @Html.LabelFor(model => model.Citta, htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.Citta, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Citta, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-outline-secondary btn-sm mt-3" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $(document).ready(function () {
+            togglePartitaIva();
+
+            $("#IsAzienda").change(function () {
+                togglePartitaIva();
+            });
+
+            function togglePartitaIva() {
+                var isAziendaChecked = $("#IsAzienda").prop("checked");
+
+                $("#Cod_Fi").prop("disabled", isAziendaChecked);
+                $("#Nome").prop("disabled", isAziendaChecked);
+                $("#RS").prop("disabled", !isAziendaChecked);
+                $("#PIVA").prop("disabled", !isAziendaChecked);
+            }
+        });
+    </script>
+}
