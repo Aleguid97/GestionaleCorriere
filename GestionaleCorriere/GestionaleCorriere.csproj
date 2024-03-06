@@ -121,7 +121,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="CodiceFiscale.cs" />
+    <Compile Include="Controllers\ApplicationDbContext.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
+    <Compile Include="Controllers\DataOdiernaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\SpedizioneController.cs" />
     <Compile Include="Controllers\UserValid.cs" />
@@ -192,9 +194,11 @@
     <Content Include="Views\Cliente\Create.cshtml" />
     <Content Include="Views\Spedizione\Spedizione.cshtml" />
     <Content Include="Views\Utente\Login.cshtml" />
+    <Content Include="Views\DataOdierna\GetDataOdierna.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\Logo\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

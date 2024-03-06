@@ -1,11 +1,9 @@
 ﻿using GestionaleCorriere.Models;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace GestionaleCorriere.Controllers
 {
@@ -24,33 +22,42 @@ namespace GestionaleCorriere.Controllers
 
         [HttpPost]
         public ActionResult Login(Utenti utente)
-
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     string connectionString = ConfigurationManager.ConnectionStrings["Gestionale"].ConnectionString;
-                    SqlConnection connection = new SqlConnection(connectionString);
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        string query = "(SELECT * FROM Utenti WHERE Username = @Username and Password = @Password)";
-                             SqlCommand command = new SqlCommand(query, connection);
+                        string query = "SELECT * FROM Utenti WHERE Username = @Username AND Password = @Password";
+                        using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             connection.Open();
+
                             command.Parameters.AddWithValue("@Username", utente.Username);
                             command.Parameters.AddWithValue("@Password", utente.Password);
-                           
-                            command.ExecuteNonQuery();
-                            connection.Close();
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.HasRows)
+                                {
+                                    FormsAuthentication.SetAuthCookie(utente.Username, false);
+                                    return RedirectToAction("Index", "Home");
+                                }
+                                else
+                                {
+                                    ViewBag.AuthError = "Autenticazione non riuscita";
+                                    return View();
+                                }
+                            }
                         }
                     }
-
-                    return RedirectToAction("Create", "Cliente");
                 }
                 catch (SqlException ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"Errore SQL: {ex.Message}");
-                    return View(ex.Message); // Puoi creare una vista specifica per gli errori
+                    return View("Error"); // You can create a specific view for SQL errors
                 }
                 catch (Exception ex)
                 {
