@@ -70,5 +70,11 @@ namespace GestionaleCorriere.Controllers
                 return View("Create", utente);
             }
         }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

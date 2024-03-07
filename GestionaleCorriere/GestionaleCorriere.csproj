@@ -194,11 +194,11 @@
     <Content Include="Views\Cliente\Create.cshtml" />
     <Content Include="Views\Spedizione\Spedizione.cshtml" />
     <Content Include="Views\Utente\Login.cshtml" />
-    <Content Include="Views\DataOdierna\GetDataOdierna.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Logo\" />
+    <Folder Include="Views\DataOdierna\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

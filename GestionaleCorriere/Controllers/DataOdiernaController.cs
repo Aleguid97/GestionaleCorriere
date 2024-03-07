@@ -3,57 +3,58 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace GestionaleCorriere.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DataOdiernaController : Controller
     {
-        public List<Spedizione> Consegna = new List<Spedizione>();
-        public string connectionString = ConfigurationManager.ConnectionStrings["Gestionale"].ConnectionString;
-        public string query = "SELECT * FROM Spedizione";
-
-        public async Task<JsonResult> GetDataOdierna()
+        public ActionResult Index()
         {
-            try
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GetDataOdierna1()
+        {
+            var model = new List<Spedizione>();
+            return View(model);
+        }
+
+        public List<Spedizione> Consegna = new List<Spedizione>();
+        public string ConnectionString = ConfigurationManager.ConnectionStrings["Gestionale"].ConnectionString;
+        public string Query = "SELECT * FROM Spedizione";
+
+        public JsonResult GetDataOdierna()
+        {
+            using (SqlConnection con = new SqlConnection(ConnectionString))
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlCommand cmd = new SqlCommand(Query, con))
                 {
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    con.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        await connection.OpenAsync();
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        var spedizione = new Spedizione
                         {
-                            while (await reader.ReadAsync())
-                            {
-                                Spedizione spedizione = new Spedizione
-                                {
-                                    idSpedizione = Convert.ToInt32(reader["idSpedizione"]),
-                                    FK_idCliente = Convert.ToInt32(reader["FK_idCliente"]),
-                                    codTracciamento = reader["codTracciamento"].ToString(),
-                                    dataSpedizione = Convert.ToDateTime(reader["dataSpedizione"]),
-                                    pesoSpedizione = Convert.ToDecimal(reader["pesoSpedizione"]),
-                                    cittaDestinazione = reader["cittaDestinazione"].ToString(),
-                                    nominativoDestinatario = reader["nominativoDestinatario"].ToString(),
-                                    costoSpedizione = Convert.ToDecimal(reader["costoSpedizione"]),
-                                    dataConsegna = Convert.ToDateTime(reader["dataConsegna"])
-                                };
+                            idSpedizione = Convert.ToInt32(reader["idSpedizione"]),
+                            FK_idCliente = Convert.ToInt32(reader["FK_idCliente"]),
+                            codTracciamento = reader["codTracciamento"].ToString(),
+                            dataSpedizione = Convert.ToDateTime(reader["dataSpedizione"]),
+                            pesoSpedizione = Convert.ToDecimal(reader["pesoSpedizione"]),
+                            cittaDestinazione = reader["cittaDestinazione"].ToString(),
+                            nominativoDestinatario = reader["nominativoDestinatario"].ToString(),
+                            costoSpedizione = Convert.ToDecimal(reader["costoSpedizione"]),
+                            dataConsegna = Convert.ToDateTime(reader["dataConsegna"])
+                        };
 
-                                Consegna.Add(spedizione);
-                            }
-
-                        }
+                        Consegna.Add(spedizione);
                     }
+                    con.Close();
                 }
-
-                return Json(Consegna, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
-                // Gestisci gli errori, ad esempio, loggali o restituisci un messaggio di errore
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
+            return Json(Consegna, JsonRequestBehavior.AllowGet);
         }
     }
 }
